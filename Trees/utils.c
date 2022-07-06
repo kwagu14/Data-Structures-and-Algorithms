@@ -1,11 +1,10 @@
-/*
-    Some utilities to aid with the tree programs
-*/
+/* Some utilities to aid with the tree programs */
 
 #include "utils.h"
 
 
-//NODE QUEUE: QUEUE THAT WORKS WITH NODES
+/****************** NODE QUEUE: QUEUE THAT HOLDS NODES INSTEAD OF INT ************************/
+
 
 Queue* createQueue(int capacity){
     Queue* queue = (Queue*) malloc(sizeof(Queue)); 
@@ -71,3 +70,7 @@ GeneralNode* peek(Queue* queue){
     GeneralNode** queueArr = queue -> array; 
     return queueArr[queue -> start]; 
 }
+
+
+/******************************* END QUEUE FUNCTIONS ******************************************/
+
