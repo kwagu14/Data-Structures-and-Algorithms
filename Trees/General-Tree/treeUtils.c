@@ -1,6 +1,6 @@
-/* Some utilities to aid with the tree programs */
+/* Some utilities to aid with the general tree program */
 
-#include "utils.h"
+#include "treeUtils.h"
 
 
 /****************** NODE QUEUE: QUEUE THAT HOLDS NODES INSTEAD OF INT ************************/
@@ -70,7 +70,3 @@ GeneralNode* peek(Queue* queue){
     GeneralNode** queueArr = queue -> array; 
     return queueArr[queue -> start]; 
 }
-
-
-/******************************* END QUEUE FUNCTIONS ******************************************/
-

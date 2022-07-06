@@ -1,6 +1,6 @@
 /* Program to implement a tree data structure in which each child has an arbitrary number of nodes */
 
-#include "utils.h"
+#include "treeUtils.h"
 
 
 GeneralNode* createGeneralNode(int data){
@@ -33,7 +33,7 @@ void addChild(GeneralNode* parent, GeneralNode* newChild){
 
 
 
-//enqueues all of the node's children
+//enqueues all of the children of a given node 
 void enqueueChildren(Queue* queue, GeneralNode* parent){
     if(!(parent -> leftmostChild)){
         return;

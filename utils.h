@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef GENERALUTILS_H
+#define GENERALUTILS_H
 
 #include <stdio.h>
 
