@@ -66,14 +66,7 @@ void printTreeLevelOrder(GeneralNode* parent){
         printf("%d\t", peek(queue) -> data);
         //remove the parent
         dequeue(queue);
-
-        if(parent -> nextSibling == NULL){
-            //if no next sibling, use the next node in the queue
-            parent = peek(queue);
-        }else{
-            //otherwise use the next sibling
-            parent = parent -> nextSibling;
-        }
+        parent = peek(queue);
 
     }
     printf("\n");

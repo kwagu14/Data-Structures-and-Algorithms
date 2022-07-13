@@ -24,6 +24,8 @@ void minHeapify(Heap* heap, int nodeIndex ){
     //if smallest is less than the current node, perform a swap between node and smallest
     if((heap->array)[smallestInd] < (heap->array)[nodeIndex]){
         swap(&(heap->array)[smallestInd], &(heap->array)[nodeIndex]);
+        //sink down the swapped node to it's correct position
+        sinkDown(heap, smallestInd);
     }
 
 }
