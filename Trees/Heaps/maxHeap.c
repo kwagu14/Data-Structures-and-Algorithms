@@ -1,92 +1,140 @@
 /* Program for implementing a max heap data structure */
-/* very similar to min heap; comparison signs have changed */
 #include "heapUtils.h"
+#include "../../utils.h"
+
 
 
 //this heapifies a single subtree 
-void maxHeapify(/* Heap* heap, int nodeIndex */){
+void maxHeapify(Heap* heap, int nodeIndex ){
+    int largest = nodeIndex;
+    int leftChild = 2*nodeIndex + 1;
+    int rightChild = 2*nodeIndex + 2;
 
-    //left child: 2*nodeIndex + 1
-    //right child: 2*nodeIndex + 2
+    //MAKE SURES THESE VALUES ARE WITHIN BOUNDS!
+    if(leftChild < heap -> size && (heap->array)[leftChild] > (heap->array)[largest]){
+        largest = leftChild;
 
-    //MAKE SURES THESE VALUES ARE WITHIN BOUNDS! (leftChild < heap.size and rightChild < heap.size)
-    //if not in bounds, set the child to -1. 
+    }
+    if(rightChild < heap -> size && (heap->array)[rightChild] > (heap->array)[largest]){
+        largest = rightChild;
+    }
 
-    //now find the maximum of the two children (largest)
-    //if largest is less than the current node, perform a swap between node and largest
-    //else, do nothing. The subtree is already fixed
+    //if smallest is less than the current node, perform a swap between node and smallest
+    if(largest != nodeIndex){
+        swap(&(heap->array)[largest], &(heap->array)[nodeIndex]);
+        //sink down the swapped node to it's correct position OR call recursively
+        minHeapify(heap, largest);
+    }
 
 }
 
 
 
-void buildMaxHeap(/* Heap* heap */){
+void buildMinHeap(Heap* heap){
 
-    //start at rightmost non-leaf node, which is (size/2) - 1. Perform heapify on this subtree.
-    //Do this on all the remaining subtrees.
-    //since the data is arranged in an array, all of the parents can be accessed simply by decrementing the node index each time to traverse the array backwards  
+    //start at rightmost non-leaf node, which is (size/2) - 1. 
+    int start = ((heap -> size)/2) - 1;
 
-}
+    //Do for all subtrees; since the data is arranged in an array, all parents can be accessed by traversing the array backwards  
+    for(int i = start; i >= 0; --i){
+        maxHeapify(heap, i);
+    }
 
-
-
-//sinks down a single element to its correct position; expensive for nodes high in tree
-void sinkDown(/* Heap* heap, int node */){
-    //left child: 2*nodeIndex + 1
-    //right child: 2*nodeIndex + 2
-
-    //find the minimum of the two children
-    //compare the node to the minimum. If greater than minimum, swap
-    //continue this process until the comparison fails [while(node < minimum)]
-    //remember to update the index of the node after swaps. Will take on the left or right child index
 }
 
 
 
 //floats up a single element to its correct position; expensive for nodes towards bottom of tree
-void floatUp(/* Heap* heap, int nodeIndex */){
-    //parent index: (i-1)/2
-    //as long as the node is greater than the parent AND as long as nodeIndex > 0
-    //if node is greater than parent, perform a swap
+void floatUp(Heap* heap, int nodeIndex){
+    int parentIndex;
+    //as long as the node is less than the parent AND nodeIndex > 0
+    while((heap->array)[nodeIndex] > (heap->array)[parentIndex] && nodeIndex > 0){
+        parentIndex = (nodeIndex-1)/2;
+        //perform a swap and update the nodeIndex to parent
+        swap(&(heap->array)[nodeIndex], &(heap->array)[parentIndex]);
+        nodeIndex = parentIndex;
+    }
 }
 
 
 
-int extractMaximum(/* Heap* heap */){
-    //check for emptiness
-    //return the first element in the array
-    //overwrite the first element with the last element in the heap
-    //sink down the new root
-    //update size
-
+int extractMaximum(Heap* heap){
+    //make sure something is in the heap
+    if(heap -> size > 0){
+        int maximum = (heap -> array)[0];
+        int heapSize = heap->size;
+        //overwrite the first element with the last element in the heap
+        (heap -> array)[0] = (heap -> array)[heapSize-1];
+        //sink down the new root
+        maxHeapify(heap, 0);
+        //update size
+        --(heap -> size);
+        return maximum;
+    }else{
+        printf("Cannot extract maximum. Nothing is within the heap.\n");
+    }
 }
 
 
 
-int getMaximum(/* Heap* heap */){
-    //check for emptiness
-    //simply return the first element in the array
+int getMaximum(Heap* heap){
+    //make sure something is in the heap
+    if(heap -> size > 0){
+        //simply return the first element in the array
+        return (heap->array)[0];
+    }else{
+        printf("Cannot get the maximum. Nothing is within the heap.\n");
+    }
 }
 
 
 
-void increaseKey(/* Heap*  heap, int nodeIndex, int newVal*/){
-    //change the value of the node; it's assumed newVal will be greater
+void increaseKey(Heap*  heap, int nodeIndex, int newVal){
+    //change the value of the node; it's assumed newVal will be bigger
+    (heap->array)[nodeIndex] = newVal;
     //apply the float up operation to the node
+    floatUp(heap, nodeIndex);
 }
 
 
-void deleteNode(/* Heap* heap, int nodeIndex*/){
-    //check for emptiness
-    //overwrite the node to be deleted with the last element in the heap
-    //sink down the element to it's correct spot
-    //update size
+void deleteNode(Heap* heap, int nodeIndex){
+    //make sure something is in the heap
+    if(heap -> size > 0){
+        int heapSize = heap->size;
+        //overwrite the node to be deleted with the last element in the heap
+        (heap->array)[nodeIndex] = (heap->array)[heapSize-1];
+        //sink down the element to it's correct spot
+        maxHeapify(heap, nodeIndex);
+        //update size
+        --(heap -> size);
+    }else{
+        printf("Cannot delete the item. Nothing is within the heap.\n");
+    }
 }
 
 
-void insertNode(/* Heap* heap, int nodeIndex*/){
+void insertNode(Heap* heap, int value){
     //check for overflow
-    //put the node in the next free position in the array
-    //float it up to it's correct position
-    //update size
+    if(heap -> size == heap -> maxCapacity){
+        printf("Cannot add the node in the heap. There is not enough space.\n");
+    }else{
+        //put the node in the next free position in the array
+        (heap->array)[heap->size] = value;
+        //float it up to it's correct position
+        floatUp(heap, heap->size);
+        //update size
+        ++(heap -> size);
+    }
+}
+
+
+int main(){
+
+    int data[100] = {3, 8, 2, 9, 8, 2, 4, 1, 0, 0, 1, 8};
+
+    Heap* heap = initializeHeap(100, data, 12);
+
+
+
+    return 0;
 }

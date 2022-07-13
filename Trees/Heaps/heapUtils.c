@@ -2,7 +2,7 @@
 #include "heapUtils.h"
 
 //initializes an empty heap data structure
-Heap* initializeHeap(int maxCapacity, int* dataset){
+Heap* initializeHeap(int maxCapacity, int* dataset, int dataSize){
     Heap* newHeap = (Heap*) malloc(sizeof(Heap));
     newHeap -> maxCapacity = maxCapacity;
     newHeap -> size = 0; 

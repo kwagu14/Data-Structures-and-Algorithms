@@ -10,7 +10,7 @@ typedef struct Heap{
     int size;
 } Heap;
 
-Heap* initializeHeap(int maxCapacity, int* dataset, int size);
+Heap* initializeHeap(int maxCapacity, int* dataset, int dataSize);
 
 int findMinimum(int* array, int ind1, int ind2);
 

@@ -1,4 +1,4 @@
-/* Program for implementing a max heap data structure */
+/* Program for implementing a minimum heap data structure */
 #include "heapUtils.h"
 #include "../../utils.h"
 
@@ -6,26 +6,24 @@
 
 //this heapifies a single subtree 
 void minHeapify(Heap* heap, int nodeIndex ){
-
+    int smallest = nodeIndex;
     int leftChild = 2*nodeIndex + 1;
     int rightChild = 2*nodeIndex + 2;
 
     //MAKE SURES THESE VALUES ARE WITHIN BOUNDS!
-    if(leftChild >= heap -> size){
-        //if not in bounds, set the child to -1.
-        leftChild = -1;
-    }
-    if(rightChild >= heap -> size){
-        rightChild = -1;
-    } 
+    if(leftChild < heap -> size && (heap->array)[leftChild] < (heap->array)[smallest]){
+        smallest = leftChild;
 
-    //now find the minimum of the two children
-    int smallestInd = findMinimum(heap->array, leftChild, rightChild);
+    }
+    if(rightChild < heap -> size && (heap->array)[rightChild] < (heap->array)[smallest]){
+        smallest = rightChild;
+    }
+
     //if smallest is less than the current node, perform a swap between node and smallest
-    if((heap->array)[smallestInd] < (heap->array)[nodeIndex]){
-        swap(&(heap->array)[smallestInd], &(heap->array)[nodeIndex]);
-        //sink down the swapped node to it's correct position
-        sinkDown(heap, smallestInd);
+    if(smallest != nodeIndex){
+        swap(&(heap->array)[smallest], &(heap->array)[nodeIndex]);
+        //sink down the swapped node to it's correct position OR call recursively
+        minHeapify(heap, smallest);
     }
 
 }
@@ -46,22 +44,22 @@ void buildMinHeap(Heap* heap){
 
 
 
-//sinks down a single element to its correct position; expensive for nodes high in tree
-void sinkDown(Heap* heap, int nodeIndex){
-    int leftChild;
-    int rightChild;
-    int minimumInd;
+// //sinks down a single element to its correct position; expensive for nodes high in tree
+// void sinkDown(Heap* heap, int nodeIndex){
+//     int leftChild;
+//     int rightChild;
+//     int minimumInd;
 
-    //continue swapping the node with the minimum child as long as node > minimum; 
-    while((heap->array)[nodeIndex] > (heap->array)[minimumInd] && minimumInd < heap->size){ //NOTE: NEED TO FIX LAST CONDITION; MAY NOT WORK IF MINIMUMIND = -1
-        int leftChild = 2*nodeIndex + 1;
-        int rightChild = 2*nodeIndex + 2;
-        minimumInd = findMinimum(heap->array, leftChild, rightChild);
-        swap(&(heap->array)[nodeIndex], &(heap->array)[minimumInd]);
-        //remember to update the index of the node after swaps with min child
-        nodeIndex = minimumInd;
-    }
-}
+//     //continue swapping the node with the minimum child as long as node > minimum; 
+//     while((heap->array)[nodeIndex] > (heap->array)[minimumInd] && minimumInd < heap->size){ //NOTE: NEED TO FIX LAST CONDITION; MAY NOT WORK IF MINIMUMIND = -1
+//         leftChild = 2*nodeIndex + 1;
+//         rightChild = 2*nodeIndex + 2;
+//         minimumInd = findMinimum(heap->array, leftChild, rightChild);
+//         swap(&(heap->array)[nodeIndex], &(heap->array)[minimumInd]);
+//         //remember to update the index of the node after swaps with min child
+//         nodeIndex = minimumInd;
+//     }
+// }
 
 
 
@@ -87,7 +85,7 @@ int extractMinimum(Heap* heap){
         //overwrite the first element with the last element in the heap
         (heap -> array)[0] = (heap -> array)[heapSize-1];
         //sink down the new root
-        sinkDown(heap, 0);
+        minHeapify(heap, 0);
         //update size
         --(heap -> size);
         return minimum;
@@ -125,7 +123,7 @@ void deleteNode(Heap* heap, int nodeIndex){
         //overwrite the node to be deleted with the last element in the heap
         (heap->array)[nodeIndex] = (heap->array)[heapSize-1];
         //sink down the element to it's correct spot
-        sinkDown(heap, nodeIndex);
+        minHeapify(heap, nodeIndex);
         //update size
         --(heap -> size);
     }else{
@@ -153,7 +151,7 @@ int main(){
 
     int data[100] = {3, 8, 2, 9, 8, 2, 4, 1, 0, 0, 1, 8};
 
-    Heap* heap = initializeHeap(100, data);
+    Heap* heap = initializeHeap(100, data, 12);
 
 
 
