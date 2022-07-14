@@ -6,22 +6,22 @@
 
 //this heapifies a single subtree 
 void minHeapify(Heap* heap, int nodeIndex ){
+    int* heapArr = heap -> array;
     int smallest = nodeIndex;
     int leftChild = 2*nodeIndex + 1;
     int rightChild = 2*nodeIndex + 2;
 
-    //MAKE SURES THESE VALUES ARE WITHIN BOUNDS!
-    if(leftChild < heap -> size && (heap->array)[leftChild] < (heap->array)[smallest]){
+    //MAKE SURES THESE CHILDREN ARE WITHIN BOUNDS!
+    if(leftChild < heap->size && heapArr[leftChild] < heapArr[smallest]){
         smallest = leftChild;
-
     }
-    if(rightChild < heap -> size && (heap->array)[rightChild] < (heap->array)[smallest]){
+    if(rightChild < heap->size && heapArr[rightChild] < heapArr[smallest]){
         smallest = rightChild;
     }
 
     //if smallest is less than the current node, perform a swap between node and smallest
     if(smallest != nodeIndex){
-        swap(&(heap->array)[smallest], &(heap->array)[nodeIndex]);
+        swap(&heapArr[smallest], &heapArr[nodeIndex]);
         //sink down the swapped node to it's correct position OR call recursively
         minHeapify(heap, smallest);
     }
@@ -34,7 +34,6 @@ void buildMinHeap(Heap* heap){
 
     //start at rightmost non-leaf node, which is (size/2) - 1. 
     int start = ((heap -> size)/2) - 1;
-
     //Do for all subtrees; since the data is arranged in an array, all parents can be accessed by traversing the array backwards  
     for(int i = start; i >= 0; --i){
         minHeapify(heap, i);
@@ -44,34 +43,15 @@ void buildMinHeap(Heap* heap){
 
 
 
-// //sinks down a single element to its correct position; expensive for nodes high in tree
-// void sinkDown(Heap* heap, int nodeIndex){
-//     int leftChild;
-//     int rightChild;
-//     int minimumInd;
-
-//     //continue swapping the node with the minimum child as long as node > minimum; 
-//     while((heap->array)[nodeIndex] > (heap->array)[minimumInd] && minimumInd < heap->size){ //NOTE: NEED TO FIX LAST CONDITION; MAY NOT WORK IF MINIMUMIND = -1
-//         leftChild = 2*nodeIndex + 1;
-//         rightChild = 2*nodeIndex + 2;
-//         minimumInd = findMinimum(heap->array, leftChild, rightChild);
-//         swap(&(heap->array)[nodeIndex], &(heap->array)[minimumInd]);
-//         //remember to update the index of the node after swaps with min child
-//         nodeIndex = minimumInd;
-//     }
-// }
-
-
-
 //floats up a single element to its correct position; expensive for nodes towards bottom of tree
 void floatUp(Heap* heap, int nodeIndex){
-    int parentIndex;
+    int parentIndex = (nodeIndex-1)/2;
     //as long as the node is less than the parent AND nodeIndex > 0
-    while((heap->array)[nodeIndex] < (heap->array)[parentIndex] && nodeIndex > 0){
-        parentIndex = (nodeIndex-1)/2;
+    while(nodeIndex > 0 && (heap->array)[nodeIndex] < (heap->array)[parentIndex]){
         //perform a swap and update the nodeIndex to parent
         swap(&(heap->array)[nodeIndex], &(heap->array)[parentIndex]);
         nodeIndex = parentIndex;
+        parentIndex = (nodeIndex-1)/2;
     }
 }
 
@@ -149,9 +129,28 @@ void insertNode(Heap* heap, int value){
 
 int main(){
 
-    int data[100] = {3, 8, 2, 9, 8, 2, 4, 1, 0, 0, 1, 8};
+    int data[100] = {3, 8, 1, 9, 4, 2, 7, 5, 6, 0};
+    int dataSize = 10;
 
-    Heap* heap = initializeHeap(100, data, 12);
+    Heap* heap = initializeHeap(100, data, dataSize);
+    buildMinHeap(heap);
+    printf("The heapified array: \n");
+    printArray(heap->array, heap->size);
+    printf("Extracting the minimum: \n");
+    extractMinimum(heap);
+    printArray(heap->array, heap->size);
+    printf("The new minimum value: \n"); 
+    printf("%d\n", getMinimum(heap));
+    printf("decreasing the value of element 5. Old value: %d, new value: 0\n", (heap->array)[5]);
+    decreaseKey(heap, 5, 0);
+    printArray(heap->array, heap->size);
+    printf("deleting the 5th node. Value = %d\n", (heap->array)[5]);
+    deleteNode(heap, 5);
+    printArray(heap->array, heap->size);
+    printf("inserting a node into the heap. Value = 10:\n");
+    insertNode(heap, 10);
+    printArray(heap->array, heap->size);
+
 
 
 

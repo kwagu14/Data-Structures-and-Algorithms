@@ -1,4 +1,4 @@
-/* Program for implementing a max heap data structure */
+/* Program for implementing a minimum heap data structure */
 #include "heapUtils.h"
 #include "../../utils.h"
 
@@ -6,35 +6,34 @@
 
 //this heapifies a single subtree 
 void maxHeapify(Heap* heap, int nodeIndex ){
+    int* heapArr = heap -> array;
     int largest = nodeIndex;
     int leftChild = 2*nodeIndex + 1;
     int rightChild = 2*nodeIndex + 2;
 
-    //MAKE SURES THESE VALUES ARE WITHIN BOUNDS!
-    if(leftChild < heap -> size && (heap->array)[leftChild] > (heap->array)[largest]){
+    //MAKE SURES THESE CHILDREN ARE WITHIN BOUNDS!
+    if(leftChild < heap->size && heapArr[leftChild] > heapArr[largest]){
         largest = leftChild;
-
     }
-    if(rightChild < heap -> size && (heap->array)[rightChild] > (heap->array)[largest]){
+    if(rightChild < heap->size && heapArr[rightChild] > heapArr[largest]){
         largest = rightChild;
     }
 
-    //if smallest is less than the current node, perform a swap between node and smallest
+    //if largest is less than the current node, perform a swap between node and smallest
     if(largest != nodeIndex){
-        swap(&(heap->array)[largest], &(heap->array)[nodeIndex]);
-        //sink down the swapped node to it's correct position OR call recursively
-        minHeapify(heap, largest);
+        swap(&heapArr[largest], &heapArr[nodeIndex]);
+        //sink down the swapped node to it's correct position
+        maxHeapify(heap, largest);
     }
 
 }
 
 
 
-void buildMinHeap(Heap* heap){
+void buildMaxHeap(Heap* heap){
 
     //start at rightmost non-leaf node, which is (size/2) - 1. 
     int start = ((heap -> size)/2) - 1;
-
     //Do for all subtrees; since the data is arranged in an array, all parents can be accessed by traversing the array backwards  
     for(int i = start; i >= 0; --i){
         maxHeapify(heap, i);
@@ -46,13 +45,13 @@ void buildMinHeap(Heap* heap){
 
 //floats up a single element to its correct position; expensive for nodes towards bottom of tree
 void floatUp(Heap* heap, int nodeIndex){
-    int parentIndex;
-    //as long as the node is less than the parent AND nodeIndex > 0
-    while((heap->array)[nodeIndex] > (heap->array)[parentIndex] && nodeIndex > 0){
-        parentIndex = (nodeIndex-1)/2;
+    int parentIndex = (nodeIndex-1)/2;
+    //as long as the node is greater than the parent AND nodeIndex > 0
+    while(nodeIndex > 0 && (heap->array)[nodeIndex] > (heap->array)[parentIndex]){
         //perform a swap and update the nodeIndex to parent
         swap(&(heap->array)[nodeIndex], &(heap->array)[parentIndex]);
         nodeIndex = parentIndex;
+        parentIndex = (nodeIndex-1)/2;
     }
 }
 
@@ -90,7 +89,7 @@ int getMaximum(Heap* heap){
 
 
 void increaseKey(Heap*  heap, int nodeIndex, int newVal){
-    //change the value of the node; it's assumed newVal will be bigger
+    //change the value of the node; it's assumed newVal will be larger
     (heap->array)[nodeIndex] = newVal;
     //apply the float up operation to the node
     floatUp(heap, nodeIndex);
@@ -128,13 +127,30 @@ void insertNode(Heap* heap, int value){
 }
 
 
-int main(){
+// int main(){
 
-    int data[100] = {3, 8, 2, 9, 8, 2, 4, 1, 0, 0, 1, 8};
+//     int data[100] = {3, 8, 1, 9, 4, 2, 7, 5, 6, 0};
+//     int dataSize = 10;
 
-    Heap* heap = initializeHeap(100, data, 12);
+//     Heap* heap = initializeHeap(100, data, dataSize);
+//     buildMaxHeap(heap);
+//     printf("The heapified array: \n");
+//     printArray(heap->array, heap->size);
+//     printf("Extracting the maximum: \n");
+//     extractMaximum(heap);
+//     printArray(heap->array, heap->size);
+//     printf("The new maximum value: \n"); 
+//     printf("%d\n", getMaximum(heap));
+//     printf("Increasing the value of element 5. Old value: %d, new value: 11\n", (heap->array)[5]);
+//     increaseKey(heap, 5, 11);
+//     printArray(heap->array, heap->size);
+//     printf("deleting the 5th node. Value = %d\n", (heap->array)[5]);
+//     deleteNode(heap, 5);
+//     printArray(heap->array, heap->size);
+//     printf("inserting a node into the heap. Value = 10:\n");
+//     insertNode(heap, 10);
+//     printArray(heap->array, heap->size);
 
 
-
-    return 0;
-}
+//     return 0;
+// }

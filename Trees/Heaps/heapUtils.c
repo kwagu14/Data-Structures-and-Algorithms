@@ -5,7 +5,7 @@
 Heap* initializeHeap(int maxCapacity, int* dataset, int dataSize){
     Heap* newHeap = (Heap*) malloc(sizeof(Heap));
     newHeap -> maxCapacity = maxCapacity;
-    newHeap -> size = 0; 
+    newHeap -> size = dataSize; 
     newHeap -> array = dataset;
 }
 
