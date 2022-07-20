@@ -12,6 +12,6 @@ typedef struct Node{
 } Node; 
 
 
-Node* InitializeNode(int key);
+Node* InitializeNode(int key, Node* parent);
 
 #endif
