@@ -3,8 +3,8 @@
 #include "treeUtils.h"
 
 
-GeneralNode* createGeneralNode(int data){
-    GeneralNode* newNode = (GeneralNode*) malloc(sizeof(GeneralNode));
+Node* createNode(int data){
+    Node* newNode = (Node*) malloc(sizeof(Node));
     newNode -> data = data;
     newNode -> leftmostChild = NULL;
     newNode -> nextSibling = NULL;
@@ -13,11 +13,11 @@ GeneralNode* createGeneralNode(int data){
 
 
 
-void addChild(GeneralNode* parent, GeneralNode* newChild){
+void addChild(Node* parent, Node* newChild){
 
     if(parent -> leftmostChild){
 
-        GeneralNode* rightmostChild = parent -> leftmostChild;
+        Node* rightmostChild = parent -> leftmostChild;
         //chase pointers down to rightmost child
         while(rightmostChild -> nextSibling != NULL){
             rightmostChild = rightmostChild -> nextSibling;
@@ -34,12 +34,12 @@ void addChild(GeneralNode* parent, GeneralNode* newChild){
 
 
 //enqueues all of the children of a given node 
-void enqueueChildren(Queue* queue, GeneralNode* parent){
+void enqueueChildren(Queue* queue, Node* parent){
     if(!(parent -> leftmostChild)){
         return;
     }else{
         //get and enqueue the first child 
-        GeneralNode* child = parent -> leftmostChild;
+        Node* child = parent -> leftmostChild;
         enqueue(queue, child);
         while(child -> nextSibling){
             child = child -> nextSibling;
@@ -51,7 +51,7 @@ void enqueueChildren(Queue* queue, GeneralNode* parent){
 
 
 //prints the data in level order as a stream (no newlines)
-void printTreeLevelOrder(GeneralNode* parent){
+void printTreeLevelOrder(Node* parent){
 
     printf("Printing out the tree in level-order: \n");
     Queue* queue = createQueue(100);
@@ -78,18 +78,18 @@ void printTreeLevelOrder(GeneralNode* parent){
 int main(){
 
     //create the root node 
-    GeneralNode* root = createGeneralNode(7);
+    Node* root = createNode(7);
     //create some children
-    GeneralNode* c1 = createGeneralNode(9);
-    GeneralNode* c2 = createGeneralNode(5);
-    GeneralNode* c3 = createGeneralNode(1);
-    GeneralNode* c4 = createGeneralNode(2);
-    GeneralNode* c5 = createGeneralNode(4);
-    GeneralNode* c6 = createGeneralNode(6);
-    GeneralNode* c7 = createGeneralNode(3);
-    GeneralNode* c8 = createGeneralNode(1);
-    GeneralNode* c9 = createGeneralNode(7);
-    GeneralNode* c10 = createGeneralNode(0);
+    Node* c1 = createNode(9);
+    Node* c2 = createNode(5);
+    Node* c3 = createNode(1);
+    Node* c4 = createNode(2);
+    Node* c5 = createNode(4);
+    Node* c6 = createNode(6);
+    Node* c7 = createNode(3);
+    Node* c8 = createNode(1);
+    Node* c9 = createNode(7);
+    Node* c10 = createNode(0);
     
     //append them
     addChild(root,c1);  //9

@@ -13,7 +13,7 @@ Queue* createQueue(int capacity){
     queue -> start = 0; 
     queue -> end = 0; 
     //create an array of the correct size
-    queue -> array = (GeneralNode**) malloc(capacity * sizeof(GeneralNode*));
+    queue -> array = (Node**) malloc(capacity * sizeof(Node*));
     return queue;
 }
 
@@ -32,13 +32,13 @@ int isEmpty(Queue* queue){
 
 
 //adds element to the end of the queue
-void enqueue(Queue* queue, GeneralNode* node){
+void enqueue(Queue* queue, Node* node){
     //if queue not full, we can procede with adding something
     if(isFull(queue)){
         printf("Can't add item to the queue. It is full.\n");
     }else{
         //add the number to the next free position in the array
-        GeneralNode** queueArray = queue -> array;
+        Node** queueArray = queue -> array;
         queueArray[queue->end] = node;
         //update the size and the end of the queue
         ++(queue -> end);
@@ -50,7 +50,7 @@ void enqueue(Queue* queue, GeneralNode* node){
 
 //removes element from the front of the queue
 void dequeue(Queue* queue){
-    GeneralNode** queueArr = queue -> array;
+    Node** queueArr = queue -> array;
     //if queue empty, we can't remove anything
     if(isEmpty(queue)){
         printf("There is nothing in the queue to remove.\n");
@@ -66,7 +66,7 @@ void dequeue(Queue* queue){
 
 
 
-GeneralNode* peek(Queue* queue){
-    GeneralNode** queueArr = queue -> array; 
+Node* peek(Queue* queue){
+    Node** queueArr = queue -> array; 
     return queueArr[queue -> start]; 
 }

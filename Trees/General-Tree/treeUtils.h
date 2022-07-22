@@ -5,13 +5,13 @@
 #include <stdlib.h>
 
 
-typedef struct GeneralNode {
+typedef struct Node {
 
     struct GeneralNode* leftmostChild;
     struct GeneralNode* nextSibling;
     int data;
 
-} GeneralNode;
+} Node;
 
 
 typedef struct Queue{
@@ -19,7 +19,7 @@ typedef struct Queue{
     int end; 
     int size;
     int capacity;
-    GeneralNode** array;
+    Node** array;
 } Queue;
 
 
@@ -29,10 +29,10 @@ int isFull(Queue* queue);
 
 int isEmpty(Queue* queue);
 
-void enqueue(Queue* queue, GeneralNode* node);
+void enqueue(Queue* queue, Node* node);
 
 void dequeue(Queue* queue);
 
-GeneralNode* peek(Queue* queue);
+Node* peek(Queue* queue);
 
 #endif

@@ -1,11 +1,5 @@
-/* 
-    PRINTING
-        print level order
-        print inorder
-
-*/
-
 #include "binarySearchTree.h"
+#include "../General-Tree/treeUtils.h"
 
 Node* initializeNode(int key, Node* parent){
     Node* newNode = (Node*) malloc(sizeof(Node));
@@ -157,11 +151,47 @@ Node* search(int key, Node* root){
 
 
 void printTreeInorder(Node* root){
-
+    if(root == NULL){
+        return;
+    }
+    printTreeInorder(root -> leftChild);
+    printf(root -> key + "\t"); 
+    printTreeInorder(root-> rightChild);
 }
 
 
 
-void printTreeLevelOrder(Node* root){
-    
+void enqueueChildren(Queue* queue, Node* parent){
+    if(parent -> leftChild){
+        enqueue(queue, parent -> leftChild);
+    }
+
+    if(parent -> rightChild){
+        enqueue(queue, parent -> rightChild);
+    }
+}
+
+
+
+//prints the data in level order as a stream (no newlines)
+void printTreeLevelOrder(Node* parent){
+
+    printf("Printing out the tree in level-order: \n");
+    Queue* queue = createQueue(100);
+    //push the root
+    enqueue(queue, parent);
+
+    //As long as the queue isn't empty
+    while(!isEmpty(queue)){
+        //push the parent's children into the queue
+        enqueueChildren(queue, parent);
+        //print the parent's data
+        printf("%d\t", peek(queue) -> key);
+        //remove the parent
+        dequeue(queue);
+        parent = peek(queue);
+
+    }
+    printf("\n");
+        
 }
