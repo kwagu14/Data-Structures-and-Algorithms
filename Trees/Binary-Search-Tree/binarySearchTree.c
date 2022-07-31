@@ -1,5 +1,51 @@
 #include "binarySearchTree.h"
-#include "../General-Tree/treeUtils.h"
+
+
+int main(){
+
+
+    //create a node to function as the root of the tree
+    Node* root = initializeNode(8, NULL);
+    //build the tree
+    insertNode(6, root, NULL);
+    insertNode(10, root, NULL);
+    insertNode(1, root, NULL);
+    insertNode(7, root, NULL); 
+    insertNode(9, root, NULL);
+    insertNode(12, root, NULL);
+
+    //print the tree (inorder): 1, 6, 7, 8, 9, 10, 12
+    printf("printing out the tree in order:\n");
+    printTreeInorder(root);
+    printf("\n");
+    //print the tree (level order): 8, 6, 10, 1, 7, 9, 12 
+    printTreeLevelOrder(root);
+
+    //search for key 7:
+    printf("key of found node: %d\n", search(7, root)->key);
+    //minimum: 1
+    printf("Minimum of the tree: %d\n", findMinimum(root)->key);
+    //maximum: 12
+    printf("Maximum of the tree: %d\n", findMaximum(root)->key);
+    //successor of 8: 9
+    printf("successor of 8 is %d\n", findSuccessor(8, root)->key);
+    //predecessor of 9: 8
+    printf("predecessor of 9 is %d\n", findPredecessor(9, root)->key);
+
+    deleteNode(root, 8);
+    //9, 6, 10, 1, 7, 12
+    printTreeLevelOrder(root);
+    deleteNode(root, 10);
+    //9, 6, 12, 1, 7
+    printTreeLevelOrder(root);
+    deleteNode(root, 1); 
+    //9, 6, 12, 7
+    printTreeLevelOrder(root);
+
+    return 0; 
+}
+
+
 
 Node* initializeNode(int key, Node* parent){
     Node* newNode = (Node*) malloc(sizeof(Node));
@@ -10,18 +56,20 @@ Node* initializeNode(int key, Node* parent){
 }
 
 
-
+//when calling, current is initialized to root and parent is null
 Node* insertNode(int key, Node* current, Node* parent){
 
     if(current == NULL){
         //if we hit a null pointer, return the node
-        return initializeNode(key, current); 
+        return initializeNode(key, parent); 
     }else if(key < current -> key){
         //if the node is less than the parent, we need to explore the left subtree
-        current -> leftChild = insertNode(key, current -> leftChild, current);
+        parent = current;
+        current -> leftChild = insertNode(key, current -> leftChild, parent);
     }else{
         //if the node is greater, we need to explore the right subtree (node: this implementation assumes no duplicates)
-        current -> rightChild = insertNode(key, current -> rightChild, current);
+        parent = current;
+        current -> rightChild = insertNode(key, current -> rightChild, parent);
     }
 
     return current;
@@ -31,9 +79,9 @@ Node* insertNode(int key, Node* current, Node* parent){
 
 void deleteNode(Node* root, int key){
     //search for the node to be deleted; store in a variable
-    Node* currentNode;
+    Node* currentNode = search(key, root);
     //store the node's parent in a variable
-    Node* parent;
+    Node* parent = currentNode -> parent;
     //case 1: deleting a leaf node
     if(!(currentNode -> rightChild) && !(currentNode -> leftChild)){
 
@@ -50,9 +98,10 @@ void deleteNode(Node* root, int key){
         }
         //finally, free the node's memory
         free(currentNode);
+
     } else if(currentNode -> rightChild && currentNode -> leftChild){
         //find the sucessor
-        Node* successor = findSuccessor(currentNode, root);
+        Node* successor = findSuccessor(currentNode->key, root);
         //store the value of the successor in a variable
         int value = successor -> key;
         //delete the successor (recursively)
@@ -86,11 +135,14 @@ void deleteNode(Node* root, int key){
 
 
 
-Node* findSuccessor(Node* node, Node* root){
+Node* findSuccessor(int key, Node* root){
+    Node* node = search(key, root);
     Node* successor;
+    //if the node has a right child, just find the minimum of this subtree
     if(node -> rightChild){
         successor = findMinimum(node->rightChild);
     }else{
+        //otherwise, find the first right ancestor
         Node* parent = node -> parent; 
         while(parent && parent -> rightChild == node){
             node = parent;
@@ -102,11 +154,14 @@ Node* findSuccessor(Node* node, Node* root){
 
 
 
-Node* findPredecessor(Node* node, Node* root){
+Node* findPredecessor(int key, Node* root){
+    Node* node = search(key, root);
     Node* predecessor;
+    //if the node has a left child, just find the maximum of this subtree
     if(node -> leftChild){
         predecessor = findMaximum(node->leftChild);
     }else{
+        //otherwise, find the first left ancestor
         Node* parent = node -> parent; 
         while(parent && parent -> leftChild == node){
             node = parent;
@@ -155,7 +210,7 @@ void printTreeInorder(Node* root){
         return;
     }
     printTreeInorder(root -> leftChild);
-    printf(root -> key + "\t"); 
+    printf("%d\t", root -> key); 
     printTreeInorder(root-> rightChild);
 }
 
@@ -194,4 +249,70 @@ void printTreeLevelOrder(Node* parent){
     }
     printf("\n");
         
+}
+
+
+Queue* createQueue(int capacity){
+    Queue* queue = (Queue*) malloc(sizeof(Queue)); 
+    //set all of the properties for bookkeeping 
+    queue -> capacity = capacity; 
+    queue -> start = 0; 
+    queue -> end = 0; 
+    //create an array of the correct size
+    queue -> array = (Node**) malloc(capacity * sizeof(Node*));
+    return queue;
+}
+
+
+
+int isFull(Queue* queue){
+    return queue -> end == queue -> capacity;
+}
+
+
+
+int isEmpty(Queue* queue){
+    return queue -> start == queue -> end;
+}
+
+
+
+//adds element to the end of the queue
+void enqueue(Queue* queue, Node* node){
+    //if queue not full, we can procede with adding something
+    if(isFull(queue)){
+        printf("Can't add item to the queue. It is full.\n");
+    }else{
+        //add the number to the next free position in the array
+        Node** queueArray = queue -> array;
+        queueArray[queue->end] = node;
+        //update the size and the end of the queue
+        ++(queue -> end);
+    }
+
+}
+
+
+
+//removes element from the front of the queue
+void dequeue(Queue* queue){
+    Node** queueArr = queue -> array;
+    //if queue empty, we can't remove anything
+    if(isEmpty(queue)){
+        printf("There is nothing in the queue to remove.\n");
+    }else{
+        for(int i = 0; i < queue -> capacity - 1; i++){
+            queueArr[i] = queueArr[i + 1];
+        } 
+        //overwrite the last element with 0, for good measure
+        queueArr[queue -> end] = 0; 
+        --(queue -> end);
+    }
+}
+
+
+
+Node* peek(Queue* queue){
+    Node** queueArr = queue -> array; 
+    return queueArr[queue -> start]; 
 }

@@ -6,10 +6,10 @@
 
 typedef struct Node{
     int key;
-    Node* rightChild;
-    Node* leftChild; 
-    Node* parent; 
-} Node; 
+    struct Node* rightChild;
+    struct Node* leftChild; 
+    struct Node* parent; 
+}Node;
 
 typedef struct Queue{
     int start; 
@@ -20,10 +20,29 @@ typedef struct Queue{
 } Queue;
 
 
-Node* InitializeNode(int key, Node* parent);
-
+Node* initializeNode(int key, Node* parent);
 
 Queue* createQueue(int capacity);
+
+Node* insertNode(int key, Node* current, Node* parent);
+
+void deleteNode(Node* root, int key);
+
+Node* findSuccessor(int key, Node* root);
+
+Node* findPredecessor(int key, Node* root);
+
+Node* findMinimum(Node* root);
+
+Node* findMaximum(Node* root);
+
+Node* search(int key, Node* root);
+
+void printTreeInorder(Node* root);
+
+void enqueueChildren(Queue* queue, Node* parent);
+
+void printTreeLevelOrder(Node* parent);
 
 int isFull(Queue* queue);
 
